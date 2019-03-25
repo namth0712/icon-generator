@@ -1,0 +1,20 @@
+{
+  "name": "icon-generator",
+  "version": "1.0.0",
+  "description": "Generate icons",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=production"
+  },
+  "author": "NamTH",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
+  },
+  "dependencies": {
+    "file-saver": "^2.0.1",
+    "jszip": "^3.2.0"
+  }
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Generate icon by sizes" />
+    <title>Generate icons</title>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="site-title">Generate icons by sizes</h1>
+      <div class="main-options">
+        <div class="btn btn-zip" id="download-zip">Download zip</div>
+        <div class="uploadArea">
+          <input type="file" name="img" class="upload-handler" />
+        </div>
+        <div class="checkbox-list">
+          <div class="checkall-input">
+            <label
+              ><input type="checkbox" value="1" class="checkall" />
+              Check-all</label
+            >
+          </div>
+        </div>
+      </div>
+      <div class="canvas-containter">
+        <span class="src-info"></span>
+        <canvas id="src" class="img-responsive"></canvas>
+      </div>
+      <div id="result"></div>
+      <script src="main.js"></script>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,154 @@
+/*! minireset.css v0.0.4 | MIT License | github.com/jgthms/minireset.css */
+html,
+body,
+p,
+ol,
+ul,
+li,
+dl,
+dt,
+dd,
+blockquote,
+figure,
+fieldset,
+legend,
+textarea,
+pre,
+iframe,
+hr,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: normal;
+}
+ul {
+  list-style: none;
+}
+button,
+input,
+select,
+textarea {
+  margin: 0;
+}
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+img,
+embed,
+iframe,
+object,
+video {
+  height: auto;
+  max-width: 100%;
+}
+audio {
+  max-width: 100%;
+}
+iframe {
+  border: 0;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td,
+th {
+  padding: 0;
+  text-align: left;
+}
+body {
+  font-family: medium-content-sans-serif-font, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+    sans-serif;
+  letter-spacing: 0;
+  font-weight: 400;
+  font-style: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -moz-font-feature-settings: 'liga' on;
+  color: rgba(0, 0, 0, 0.84);
+  font-size: 16px;
+  line-height: 1.4;
+}
+.container {
+  padding: 50px 30px;
+  max-width: 1110px;
+  margin: auto;
+}
+.site-title{
+  font-size: 24px;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #ddd;
+}
+
+.checkbox-list {
+  border: 1px solid #f2f2f2;
+  padding: 10px;
+  margin: 5px;
+  font-size: 13px;
+}
+.checkbox-list > label {
+  display: inline-block;
+  margin: 3px 4px;
+  width: 60px;
+}
+.checkall-input{
+  margin-bottom: 10px;
+}
+.canvas-containter {
+  position: relative;
+}
+.src-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.54);
+  color: #ffffff;
+  padding: 5px 8px;
+}
+.btn {
+  cursor: pointer;
+  height: 25px;
+  line-height: 25px;
+  border-radius: 3px;
+  background: #009cff;
+  color: #fff;
+  padding: 0px 5px;
+  display: inline-block;
+}
+.btn:hover {
+  background: #005c99;
+}
+.btn-zip {
+  display: none;
+}
+.btn-zip.show {
+  display: inline;
+}
+
+@media screen and (prefers-color-scheme: dark){
+  body{
+    background-color: #333333;
+    color: #ffffff;
+  }
+}

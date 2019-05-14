@@ -48,6 +48,7 @@ const FileSaver = require('file-saver');
   ];
 
   const checkboxList = document.querySelector('.checkbox-list');
+  let hasImg = false;
   for (let size of sizes) {
     let cb = document.createElement('input');
     cb.setAttribute('type', 'checkbox');
@@ -70,6 +71,13 @@ const FileSaver = require('file-saver');
     return updateResized();
   });
 
+  const resizeTypes = document.querySelectorAll('input[name="resize_type"]');
+  for (let i = 0; i < resizeTypes.length; i++) {
+    resizeTypes[i].addEventListener('click', e => {
+      return updateResized();
+    });
+  }
+
   const img = new Image();
   img.onload = function() {
     updateOrig();
@@ -88,6 +96,7 @@ const FileSaver = require('file-saver');
     ctx = src.getContext('2d');
     ctx.drawImage(img, 0, 0, src.width, src.height);
     document.querySelector('.btn-zip').classList.add('show');
+    hasImg = true;
   };
 
   const updateResized = () => {
@@ -95,22 +104,38 @@ const FileSaver = require('file-saver');
     while (result.firstChild) {
       result.removeChild(result.firstChild);
     }
+    if (!hasImg) {
+      return;
+    }
+    const resizeType = document.querySelector(
+      'input[name="resize_type"]:checked',
+    ).value;
+
     let checkboxes = Array.from(
       document.querySelectorAll('.checkbox-list input[type="checkbox"]'),
     )
       .filter(checkbox => checkbox.checked)
-      .map(checkbox => checkbox.value);
-    console.log('===checkboxes===', checkboxes);
+      .map(checkbox => parseInt(checkbox.value));
 
     for (let i = 0; i < checkboxes.length; i++) {
       let size = checkboxes[i];
       let canvas = document.createElement('canvas');
       canvas.setAttribute('class', `cnvs cnvs-${size}`);
       canvas.setAttribute('data-size', size);
-      canvas.width = size;
-      canvas.height = size;
+      console.log('===size===', size);
+      if (resizeType === 'square') {
+        canvas.width = size;
+        canvas.height = size;
+      } else if (resizeType === 'width') {
+        canvas.width = size;
+        canvas.height = Math.round((size / img.width) * img.height);
+      } else if (resizeType === 'height') {
+        canvas.width = Math.round((size / img.height) * img.width);
+        canvas.height = size;
+      }
+
       const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, size, size);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       result.appendChild(canvas);
     }
   };
@@ -129,6 +154,9 @@ const FileSaver = require('file-saver');
   const downloadZip = document.getElementById('download-zip');
   downloadZip.addEventListener('click', e => {
     e.preventDefault();
+    if (!hasImg) {
+      return;
+    }
     const zip = new JSZip();
     const imgFolder = zip.folder('icons');
 

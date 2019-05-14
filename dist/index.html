@@ -12,25 +12,56 @@
     <div class="container">
       <h1 class="site-title">Generate icons by sizes</h1>
       <div class="main-options">
-        <div class="btn btn-zip" id="download-zip">Download zip</div>
         <div class="uploadArea">
           <input type="file" name="img" class="upload-handler" />
         </div>
-        <div class="checkbox-list">
-          <div class="checkall-input">
-            <label
-              ><input type="checkbox" value="1" class="checkall" />
-              Check-all</label
-            >
+        <div class="block-options">
+          <div class="block-option">
+            <div class="block-heading">List sizes</div>
+            <div class="checkall-input">
+              <label
+                ><input type="checkbox" value="1" class="checkall" />
+                Check-all</label
+              >
+            </div>
+            <div class="checkbox-list"></div>
           </div>
+
+          <div class="block-option">
+            <div class="block-heading">Resize by</div>
+            <div class="checkall-input">
+              <label
+                ><input
+                  type="radio"
+                  name="resize_type"
+                  value="square"
+                  checked=""
+                />
+                Square</label
+              >
+            </div>
+            <div class="checkall-input">
+              <label
+                ><input type="radio" name="resize_type" value="width" />
+                Width</label
+              >
+            </div>
+            <div class="checkall-input">
+              <label
+                ><input type="radio" name="resize_type" value="height" />
+                Height</label
+              >
+            </div>
+          </div>
+          <div class="btn btn-zip" id="download-zip">Download zip</div>
         </div>
+        <div class="canvas-containter">
+          <span class="src-info"></span>
+          <canvas id="src" class="img-responsive"></canvas>
+        </div>
+        <div id="result"></div>
+        <script src="main.js"></script>
       </div>
-      <div class="canvas-containter">
-        <span class="src-info"></span>
-        <canvas id="src" class="img-responsive"></canvas>
-      </div>
-      <div id="result"></div>
-      <script src="main.js"></script>
     </div>
   </body>
 </html>

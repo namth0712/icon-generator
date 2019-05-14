@@ -1,11 +1,11 @@
-[Icon Generator](http://draeton.github.com/stitches/)
+[Icon Generator](https://namth0712.github.io/icon-generator/)
 ==========
 
 Generator icons by size using for App Icons. Support iOS, Android, MacOS and Windows icon size.
 
 ## Live Demo
 
-[Demo](https://i.namth.com/)
+[Demo](https://namth0712.github.io/icon-generator/dist/)
 
 ## Supported sizes
 

@@ -10,11 +10,11 @@
   "author": "NamTH",
   "license": "ISC",
   "devDependencies": {
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0"
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.8"
   },
   "dependencies": {
-    "file-saver": "^2.0.1",
-    "jszip": "^3.2.0"
+    "file-saver": "^2.0.2",
+    "jszip": "^3.2.2"
   }
 }

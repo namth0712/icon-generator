@@ -12,10 +12,16 @@
     <div class="container">
       <h1 class="site-title">Generate icons by sizes</h1>
       <div class="main-options">
-        <div class="uploadArea">
-          <input type="file" name="img" class="upload-handler" />
-        </div>
         <div class="block-options">
+          <div class="block-option">
+            <div class="uploadArea js-dropzone">
+              <input type="file" name="img" class="upload-handler" />
+              <p class="text-centered">
+                <span> <i class="fa fa-upload"></i> </span>
+                <span> Click here to upload </span>
+              </p>
+            </div>
+          </div>
           <div class="block-option">
             <div class="block-heading">List sizes</div>
             <div class="checkall-input">
@@ -25,9 +31,6 @@
               >
             </div>
             <div class="checkbox-list"></div>
-          </div>
-
-          <div class="block-option">
             <div class="block-heading">Resize by</div>
             <div class="checkall-input">
               <label

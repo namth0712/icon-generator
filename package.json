@@ -10,8 +10,8 @@
   "author": "NamTH",
   "license": "ISC",
   "devDependencies": {
-    "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.8"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   },
   "dependencies": {
     "file-saver": "^2.0.2",

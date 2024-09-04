@@ -157,7 +157,7 @@ const FileSaver = require('file-saver');
 
   document.querySelector('.checkall').addEventListener('click', (e) => {
     Array.from(
-      document.querySelectorAll('.checkbox-list input[type="checkbox"]'),
+      document.querySelectorAll('.checkbox-list input[type="checkbox"]')
     ).map((cb) => (cb.checked = e.target.checked));
     return updateResized();
   });
@@ -180,9 +180,8 @@ const FileSaver = require('file-saver');
     src = document.getElementById('src');
     src.width = 200;
     src.height = (200 / img.width) * img.height;
-    document.querySelector(
-      '.src-info',
-    ).innerHTML = `${img.width} x ${img.height}`;
+    document.querySelector('.src-info').innerHTML =
+      `${img.width} x ${img.height}`;
 
     ctx = src.getContext('2d');
     ctx.drawImage(img, 0, 0, src.width, src.height);
@@ -199,11 +198,11 @@ const FileSaver = require('file-saver');
       return;
     }
     const resizeType = document.querySelector(
-      'input[name="resize_type"]:checked',
+      'input[name="resize_type"]:checked'
     ).value;
 
     const checkboxes = Array.from(
-      document.querySelectorAll('.checkbox-list input[type="checkbox"]'),
+      document.querySelectorAll('.checkbox-list input[type="checkbox"]')
     )
       .filter((checkbox) => checkbox.checked)
       .map((checkbox) => parseInt(checkbox.value));

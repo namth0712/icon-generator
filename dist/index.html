@@ -1,70 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Generate icon by sizes" />
-    <title>Generate icons</title>
+    <meta name="description" content="Generate square icons from an image" />
+    <title>Icon Generator</title>
     <link rel="stylesheet" href="main.css" />
   </head>
   <body>
-    <div class="container">
-      <h1 class="site-title">Generate icons by sizes</h1>
-      <div class="main-options">
-        <div class="block-options">
-          <div class="block-option">
-            <div class="uploadArea js-dropzone">
-              <input type="file" name="img" class="upload-handler" />
-              <p class="text-centered">
-                <span> <i class="fa fa-upload"></i> </span>
-                <span> Click here to upload </span>
-              </p>
-            </div>
-          </div>
-          <div class="block-option">
-            <div class="block-heading">List sizes</div>
-            <div class="checkall-input">
-              <label
-                ><input type="checkbox" value="1" class="checkall" />
-                Check-all</label
-              >
-            </div>
-            <div class="checkbox-list"></div>
-            <div class="block-heading">Resize by</div>
-            <div class="checkall-input">
-              <label
-                ><input
-                  type="radio"
-                  name="resize_type"
-                  value="square"
-                  checked=""
-                />
-                Square</label
-              >
-            </div>
-            <div class="checkall-input">
-              <label
-                ><input type="radio" name="resize_type" value="width" />
-                Width</label
-              >
-            </div>
-            <div class="checkall-input">
-              <label
-                ><input type="radio" name="resize_type" value="height" />
-                Height</label
-              >
-            </div>
-          </div>
-          <div class="btn btn-zip" id="download-zip">Download zip</div>
+    <main class="container">
+      <h1>Icon Generator</h1>
+      <p class="intro">Create square PNG icons locally in your browser.</p>
+      <section class="uploadArea js-dropzone" aria-label="Upload image">
+        <input type="file" name="img" class="upload-handler" accept=".png,.jpg,.jpeg,.webp,.svg,image/png,image/jpeg,image/webp,image/svg+xml" />
+        <strong>Choose an image</strong>
+        <span>Click or drag and drop a PNG, JPEG, WebP, or SVG</span>
+        <span class="upload-status" aria-live="polite"></span>
+      </section>
+      <section class="source-section" aria-live="polite">
+        <span class="src-info"></span>
+        <div class="source-preview preview-checker">
+          <canvas id="src" aria-label="Source image preview"></canvas>
         </div>
-        <div class="canvas-containter">
-          <span class="src-info"></span>
-          <canvas id="src" class="img-responsive"></canvas>
+      </section>
+      <div class="controls-preview-row">
+        <div class="controls-column">
+          <fieldset class="mode-section">
+            <legend>Output sizes</legend>
+            <label><input type="radio" name="output-mode" value="all" checked /> All</label>
+            <label><input type="radio" name="output-mode" value="modern" /> Modern</label>
+            <label><input type="radio" name="output-mode" value="custom" /> Custom</label>
+            <div class="custom-sizes" hidden>
+              <label for="custom-sizes">Square sizes</label>
+              <input id="custom-sizes" type="text" inputmode="numeric" placeholder="e.g. 64, 256, 1024" />
+              <small>Use positive integers separated by commas or spaces.</small>
+            </div>
+          </fieldset>
+          <fieldset class="background-section">
+            <legend>Preview background</legend>
+            <label><input type="radio" name="preview-background" value="checker" checked /><span>Checker</span></label>
+            <label><input type="radio" name="preview-background" value="white" /><span>White</span></label>
+            <label><input type="radio" name="preview-background" value="black" /><span>Black</span></label>
+            <label><input type="radio" name="preview-background" value="light-gray" /><span>Light Gray</span></label>
+            <label><input type="radio" name="preview-background" value="dark-gray" /><span>Dark Gray</span></label>
+          </fieldset>
         </div>
-        <div id="result"></div>
-        <script src="main.js"></script>
+        <section class="platform-preview" id="platform-preview" aria-label="iOS home screen preview" hidden>
+        <h2>iOS preview</h2>
+        <div class="iphone">
+          <div class="iphone-screen">
+            <div class="ios-status"><span>9:41</span><span>▮▮▮</span></div>
+            <div class="ios-app-grid">
+              <div class="ios-app"><canvas id="preview-icon" width="60" height="60"></canvas><span>Your app</span></div>
+              <div class="ios-app placeholder-app">●<span>Notes</span></div>
+              <div class="ios-app placeholder-app">●<span>Photos</span></div>
+              <div class="ios-app placeholder-app">●<span>Music</span></div>
+            </div>
+            <div class="ios-dock"><span>●</span><span>●</span><span>●</span><span>●</span></div>
+          </div>
+        </div>
+        </section>
       </div>
-    </div>
+      <section id="result" aria-live="polite"></section>
+      <button class="btn btn-zip" id="download-zip" type="button">Download ZIP</button>
+    </main>
+    <script src="main.js"></script>
   </body>
 </html>

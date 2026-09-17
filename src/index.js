@@ -2,281 +2,229 @@ const JSZip = require('jszip');
 const FileSaver = require('file-saver');
 
 (() => {
-  /* const sizes = [
-    18,
-    19,
-    20,
-    38,
-    171,
-    200,
-  ]; */
-  const iconSizes = {
-    favicon: {
-      16: 'favicon.ico',
-      24: 'favicon.ico (IE9 Pinned site browser)',
-      32: 'favicon.ico',
-      64: 'favicon.ico (Windows site icons, Safari Reading List)',
-      72: 'apple-touch-icon-72x72-precomposed.png',
-      96: 'Google TV Favicon',
-      120: 'apple-touch-icon-120x120-precomposed.png',
-      144: 'Windows 8 Pinned Site Tile',
-      152: 'apple-touch-icon-152x152-precomposed.png',
-      228: 'Opera Coast Browser (iPad)',
-    },
-    //https://developer.apple.com/design/human-interface-guidelines/watchos/icons-and-images/home-screen-icons/
-    watchOS: {
-      48: 'Notification center on Apple Watch (38mm)',
-      55: 'Notification center on Apple Watch (42mm)',
-      58: 'Settings in the Apple Watch companion app on iPhone',
-      80: 'Home screen on Apple Watch (38mm/42mm), Long-Look notification on Apple Watch (38mm)',
-      87: 'Settings in the Apple Watch companion app on iPhone 6 Plus',
-      88: 'Long-Look notification on Apple Watch (42mm)',
-      172: 'Short-Look notification on Apple Watch (38mm)',
-      196: 'Short-Look notification on Apple Watch (42mm)',
-    },
+  const supportedSizes = [
+    16, 24, 29, 32, 36, 40, 44, 48, 50, 55, 57, 58, 60, 64, 71, 72, 76,
+    80, 87, 88, 96, 100, 114, 120, 128, 144, 150, 152, 167, 172, 180, 192,
+    196, 228, 256, 300, 512, 1024,
+  ];
+  const modernSizes = [16, 32, 48, 180, 192, 512, 1024];
+  const sizeDescriptions = {
+    16: ['Favicon', false], 24: ['Pinned browser site', false], 29: ['iOS settings', false],
+    32: ['Favicon', false], 36: ['Android LDPI', false], 40: ['iOS notifications', false],
+    44: ['Windows taskbar', false], 48: ['Android MDPI', false], 50: ['iPad Spotlight', true],
+    55: ['Apple Watch notification', false], 57: ['iPhone home screen', true],
+    58: ['iOS settings', false], 60: ['iOS notification', false], 64: ['Browser icon', false],
+    71: ['Windows small tile', false], 72: ['Android HDPI', false], 76: ['iPad', false],
+    80: ['iOS Spotlight', false], 87: ['iPhone settings', false], 88: ['Apple Watch notification', false],
+    96: ['Android XHDPI', false], 100: ['iPad Spotlight', true], 114: ['iPhone home screen', true],
+    120: ['iPhone home screen', false], 128: ['Android icon', false], 144: ['Android XXHDPI', false],
+    150: ['Windows medium tile', false], 152: ['iPad', false], 167: ['iPad Pro', false],
+    172: ['Apple Watch short look', false], 180: ['iPhone home screen', false],
+    192: ['Android XXXHDPI', false], 196: ['Apple Watch short look', false],
+    228: ['Opera Coast', false], 256: ['Desktop icon', false], 300: ['Windows large tile', false],
+    512: ['Store icon', false], 1024: ['App Store icon', false],
+  };
+  const supportedTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'];
+  const uploadArea = document.querySelector('.uploadArea');
+  const uploadInput = document.querySelector('.upload-handler');
+  const status = document.querySelector('.upload-status');
+  const sourceInfo = document.querySelector('.src-info');
+  const sourceCanvas = document.getElementById('src');
+  const sourcePreview = document.querySelector('.source-preview');
+  const result = document.getElementById('result');
+  const zipButton = document.getElementById('download-zip');
+  const customInput = document.getElementById('custom-sizes');
+  const platformPreview = document.getElementById('platform-preview');
+  const previewIcon = document.getElementById('preview-icon');
+  let previewBackground = 'checker';
+  const image = new Image();
+  let sourceFile;
+  let sourceUrl;
+  let sourceWidth = 0;
+  let sourceHeight = 0;
+  let hasImage = false;
+  let loadToken = 0;
 
-    //https://developer.apple.com/design/human-interface-guidelines/macos/icons-and-images/app-icon/
-    macOS: {
-      16: '',
-      32: '',
-      64: '',
-      128: '',
-      256: '',
-      512: '',
-      1024: '',
-    },
-
-    //https://developer.apple.com/library/archive/qa/qa1686/_index.html
-    //https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/app-icon/
-    iOS: {
-      16: '',
-      29: 'Settings (iPhone @1x)',
-      32: '',
-      40: 'Notification icon (iPhone @2x, iPad @2x)',
-      50: 'Spotlight on iPad (iOS 6.1 and earlier)',
-      57: 'Home screen on iPhone/iPod touch (iOS 6.1 and earlier)',
-      58: 'Setting icon (iPhone @3x, iPad @2x)',
-      60: 'Notification icon (iPhone @3x)',
-      72: 'Home screen on iPad (iOS 6.1 and earlier)',
-      76: 'iPad @1x',
-      80: 'Spotlight icon (iPhone @2x, iPad @2x)',
-      87: 'Setting icon iPhone @3x',
-      100: 'Spotlight on iPad with retina display (iOS 6.1 and earlier)',
-      114: 'Home screen on iPhone/iPod Touch with retina display (iOS 6.1 and earlier)',
-      120: 'iPhone @2x (iPhone 4, 4S, 5, 5C, 5S, 6, 6SE, 6S, 7, 8)',
-      144: 'Home screen on iPad with retina display (iOS 6.1 and earlier)',
-      152: 'iPad @2x (Retina iPads Mini 2 & 3, Air, 3 & 4)',
-      167: 'iPad Pro @2x',
-      180: 'iPhone @3x (iPhone 6+, 6S+, 7+, 8+, X)',
-      512: 'Apple App Store @1x',
-      1024: 'Apple App Store @2x',
-    },
-    android: {
-      36: 'LDPI (optional)',
-      48: 'MDPI',
-      72: 'HDPI',
-      96: 'XHDPI',
-      144: 'XXHDPI',
-      192: 'XXXHDPI',
-      512: 'Google Play Store',
-    },
-    window: {
-      16: '',
-      24: '',
-      32: '',
-      44: 'Window 10 app list in start menu, task bar, task manager',
-      48: '',
-      64: '',
-      71: 'Window 10 small tile',
-      128: '',
-      150: 'Window 10 medium tile',
-      256: '',
-      300: 'Window 10 Large tile',
-    },
+  const setStatus = (message, error = false) => {
+    status.innerText = message;
+    status.classList.toggle('error', error);
   };
 
-  const checkboxList = document.querySelector('.checkbox-list');
-  let hasImg = false;
+  const clearOutput = () => {
+    result.innerHTML = '';
+    zipButton.classList.remove('show');
+  };
 
-  const sizeGrouped = {};
+  const fileIsSupported = (file) => {
+    const extension = file.name.toLowerCase().split('.').pop();
+    return supportedTypes.includes(file.type) || ['png', 'jpg', 'jpeg', 'webp', 'svg'].includes(extension);
+  };
 
-  for (const sizeType in iconSizes) {
-    if (iconSizes[sizeType]) {
-      for (const size in iconSizes[sizeType]) {
-        if (!sizeGrouped[size]) {
-          sizeGrouped[size] = {};
-        }
-        sizeGrouped[size][sizeType] = iconSizes[sizeType][size];
-      }
+  const selectedSizes = () => {
+    const mode = document.querySelector('input[name="output-mode"]:checked').value;
+    if (mode === 'all') return supportedSizes;
+    if (mode === 'modern') return modernSizes;
+
+    const values = customInput.value.split(/[\s,]+/).filter(Boolean).map(Number);
+    if (!values.length || values.some((size) => !Number.isSafeInteger(size) || size <= 0) || new Set(values).size !== values.length) {
+      return null;
     }
-  }
+    return values;
+  };
 
-  for (const size in sizeGrouped) {
-    let cb = document.createElement('input');
-    cb.setAttribute('type', 'checkbox');
-    cb.setAttribute('name', `size[]`);
-    cb.setAttribute('value', size);
-    cb.classList.add('cb-size');
-    const desc = sizeGrouped[size];
-
-    cb.addEventListener('change', () => {
-      return updateResized();
-    });
-    let label = document.createElement('label');
-
-    label.appendChild(cb);
-    label.appendChild(document.createTextNode(` ${size}px`));
-
-    Object.keys(desc).map((item) => {
-      cb.classList.add(`cb-type-${item}`);
-      const sizeDesc = document.createElement('span');
-      sizeDesc.classList.add('cb-desc');
-      if (desc[item].trim()) {
-        sizeDesc.innerText = `- ${desc[item]}`;
-        label.appendChild(sizeDesc);
-      }
-    });
-
-    checkboxList.appendChild(label);
-  }
-
-  /*  for (let size of sizes) {
-    let cb = document.createElement('input');
-    cb.setAttribute('type', 'checkbox');
-    cb.setAttribute('name', `size[]`);
-    cb.setAttribute('value', size);
-    cb.classList.add('cb-size');
-    cb.addEventListener('change', () => {
-      return updateResized();
-    });
-    let label = document.createElement('label');
-    label.appendChild(cb);
-    label.appendChild(document.createTextNode(` ${size}px`));
-    checkboxList.appendChild(label);
-  } */
-
-  document.querySelector('.checkall').addEventListener('click', (e) => {
-    Array.from(
-      document.querySelectorAll('.checkbox-list input[type="checkbox"]')
-    ).map((cb) => (cb.checked = e.target.checked));
-    return updateResized();
+  const canvasToBlob = (canvas) => new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error('Export failed'))), 'image/png');
   });
 
-  const resizeTypes = document.querySelectorAll('input[name="resize_type"]');
-  for (let i = 0; i < resizeTypes.length; i++) {
-    resizeTypes[i].addEventListener('click', (e) => {
-      return updateResized();
+  const updatePreviewBackground = (background) => {
+    previewBackground = background;
+    sourcePreview.className = `source-preview preview-${previewBackground}`;
+    document.querySelectorAll('.icon-preview').forEach((preview) => {
+      preview.className = `icon-preview preview-${previewBackground}`;
     });
-  }
-
-  const img = new Image();
-  img.onload = function () {
-    updateOrig();
-    updateResized();
   };
 
-  const updateOrig = () => {
-    let src, ctx;
-    src = document.getElementById('src');
-    src.width = 200;
-    src.height = (200 / img.width) * img.height;
-    document.querySelector('.src-info').innerHTML =
-      `${img.width} x ${img.height}`;
+  const drawContained = (context, size) => {
+    const scale = Math.min(size / sourceWidth, size / sourceHeight);
+    const width = sourceWidth * scale;
+    const height = sourceHeight * scale;
+    context.clearRect(0, 0, size, size);
+    context.drawImage(image, (size - width) / 2, (size - height) / 2, width, height);
+  };
 
-    ctx = src.getContext('2d');
-    ctx.drawImage(img, 0, 0, src.width, src.height);
-    document.querySelector('.btn-zip').classList.add('show');
-    hasImg = true;
+  const updateSourcePreview = () => {
+    sourceCanvas.width = 200;
+    sourceCanvas.height = Math.round((200 / sourceWidth) * sourceHeight);
+    sourceCanvas.getContext('2d').drawImage(image, 0, 0, sourceCanvas.width, sourceCanvas.height);
+    sourceInfo.innerText = `${sourceFile.name} — ${sourceWidth} × ${sourceHeight}`;
   };
 
   const updateResized = () => {
-    const result = document.getElementById('result');
-    while (result.firstChild) {
-      result.removeChild(result.firstChild);
-    }
-    if (!hasImg) {
+    clearOutput();
+    platformPreview.hidden = true;
+    if (!hasImage) return;
+    const sizes = selectedSizes();
+    if (!sizes) {
+      setStatus('Enter unique positive integer sizes, separated by commas or spaces.', true);
       return;
     }
-    const resizeType = document.querySelector(
-      'input[name="resize_type"]:checked'
-    ).value;
 
-    const checkboxes = Array.from(
-      document.querySelectorAll('.checkbox-list input[type="checkbox"]')
-    )
-      .filter((checkbox) => checkbox.checked)
-      .map((checkbox) => parseInt(checkbox.value));
-
-    for (let i = 0; i < checkboxes.length; i += 1) {
-      const size = checkboxes[i];
+    sizes.forEach((size) => {
       const canvas = document.createElement('canvas');
-      canvas.setAttribute('class', `cnvs cnvs-${size}`);
-      canvas.setAttribute('data-size', size);
-      if (resizeType === 'square') {
-        canvas.width = size;
-        canvas.height = size;
-      } else if (resizeType === 'width') {
-        canvas.width = size;
-        canvas.height = Math.round((size / img.width) * img.height);
-      } else if (resizeType === 'height') {
-        canvas.width = Math.round((size / img.height) * img.width);
-        canvas.height = size;
-      }
+      canvas.className = `cnvs cnvs-${size}`;
+      canvas.width = size;
+      canvas.height = size;
+      canvas.dataset.size = size;
+      drawContained(canvas.getContext('2d'), size);
 
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-      const iconItem = document.createElement('div');
-
-      iconItem.classList.add('icon-item');
-      iconItem.appendChild(canvas);
-
-      const iconTitle = document.createElement('span');
-      iconTitle.innerText = `icon-${size}.png`;
-      iconTitle.classList.add('icon-desc');
-      iconTitle.addEventListener('click', (e) => {
-        e.preventDefault();
-        const link = document.createElement('a');
-        link.download = `icon-${size}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+      const item = document.createElement('div');
+      item.className = 'icon-item';
+      const preview = document.createElement('div');
+      preview.className = `icon-preview preview-${previewBackground}`;
+      preview.appendChild(canvas);
+      item.appendChild(preview);
+      const label = document.createElement('span');
+      label.className = 'icon-size';
+      label.innerText = `${size} × ${size}`;
+      item.appendChild(label);
+      const description = document.createElement('small');
+      const [descriptionText, legacy] = sizeDescriptions[size] || ['App icon', false];
+      description.className = `icon-description${legacy ? ' legacy' : ''}`;
+      description.innerText = descriptionText;
+      item.appendChild(description);
+      const download = document.createElement('button');
+      download.className = 'icon-download';
+      download.type = 'button';
+      download.innerText = 'Download';
+      download.addEventListener('click', async () => {
+        try {
+          FileSaver.saveAs(await canvasToBlob(canvas), `icon-${size}.png`);
+        } catch (error) {
+          setStatus('Could not export this icon.', true);
+        }
       });
-      iconItem.appendChild(iconTitle);
-      result.appendChild(iconItem);
-    }
+      item.appendChild(download);
+      result.appendChild(item);
+    });
+    zipButton.classList.toggle('show', sizes.length > 0);
+    platformPreview.hidden = sizes.length === 0;
+    if (sizes.length) drawContained(previewIcon.getContext('2d'), 60);
+    if (status.classList.contains('error')) setStatus(`Loaded ${sourceFile.name}`);
   };
 
-  const imgHandler = document.getElementsByClassName('upload-handler')[0];
-  imgHandler.addEventListener('change', (evt) => {
-    const files = evt.target.files; // FileList object
-
-    if (files.length && files[0] && !files[0].type.match('image.*')) {
+  const loadFile = (file) => {
+    if (!file || !fileIsSupported(file)) {
+      setStatus('Please choose a PNG, JPEG, WebP, or SVG image.', true);
       return;
     }
-    const imgUploaded = files[0];
-    img.src = window.URL.createObjectURL(imgUploaded);
+
+    clearOutput();
+    platformPreview.hidden = true;
+    hasImage = false;
+    sourceFile = file;
+    if (sourceUrl) window.URL.revokeObjectURL(sourceUrl);
+    sourceUrl = window.URL.createObjectURL(file);
+    const currentLoad = ++loadToken;
+    setStatus(`Loading ${file.name}...`);
+    image.onload = () => {
+      if (currentLoad !== loadToken) return;
+      sourceWidth = image.naturalWidth || image.width;
+      sourceHeight = image.naturalHeight || image.height;
+      if (!sourceWidth || !sourceHeight) return image.onerror();
+      hasImage = true;
+      updateSourcePreview();
+      updateResized();
+      window.URL.revokeObjectURL(sourceUrl);
+      sourceUrl = null;
+      if (!status.classList.contains('error')) setStatus(`Loaded ${sourceFile.name}`);
+    };
+    image.onerror = () => {
+      if (currentLoad !== loadToken) return;
+      if (sourceUrl) window.URL.revokeObjectURL(sourceUrl);
+      sourceUrl = null;
+      hasImage = false;
+      clearOutput();
+      platformPreview.hidden = true;
+      sourceInfo.innerText = '';
+      sourceCanvas.getContext('2d').clearRect(0, 0, sourceCanvas.width, sourceCanvas.height);
+      setStatus(`Could not decode ${file.name}. Please choose a valid image.`, true);
+    };
+    image.src = sourceUrl;
+  };
+
+  document.querySelectorAll('input[name="output-mode"]').forEach((mode) => {
+    mode.addEventListener('change', () => {
+      customInput.closest('.custom-sizes').hidden = mode.value !== 'custom';
+      updateResized();
+    });
+  });
+  document.querySelectorAll('input[name="preview-background"]').forEach((background) => {
+    background.addEventListener('change', () => updatePreviewBackground(background.value));
+  });
+  customInput.addEventListener('input', updateResized);
+  uploadInput.addEventListener('change', () => loadFile(uploadInput.files[0]));
+  uploadArea.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    uploadArea.classList.add('is-dragging');
+  });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('is-dragging'));
+  uploadArea.addEventListener('drop', (event) => {
+    event.preventDefault();
+    uploadArea.classList.remove('is-dragging');
+    loadFile(event.dataTransfer.files[0]);
   });
 
-  const downloadZip = document.getElementById('download-zip');
-  downloadZip.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!hasImg) {
-      return;
+  zipButton.addEventListener('click', async (event) => {
+    event.preventDefault();
+    if (!hasImage) return;
+    try {
+      const zip = new JSZip().folder('icons');
+      await Promise.all(Array.from(document.querySelectorAll('canvas.cnvs')).map(async (canvas) => {
+        zip.file(`icon-${canvas.dataset.size}.png`, await canvasToBlob(canvas));
+      }));
+      FileSaver.saveAs(await zip.generateAsync({ type: 'blob' }), 'app-icons.zip');
+    } catch (error) {
+      setStatus('Could not create the ZIP file.', true);
     }
-    const zip = new JSZip();
-    const imgFolder = zip.folder('icons');
-
-    const canvases = document.querySelectorAll('canvas.cnvs');
-    canvases.forEach((canvas) => {
-      let size = canvas.getAttribute('data-size');
-      let dataURL = canvas.toDataURL('image/png');
-      dataURL = dataURL.replace(/^data:image\/(png|jpg);base64,/, '');
-      imgFolder.file(`icon-${size}.png`, dataURL, { base64: true });
-    });
-    // Generate the zip file asynchronously
-    zip.generateAsync({ type: 'blob' }).then((content) => {
-      // Force down of the Zip file
-      FileSaver.saveAs(content, 'app-icons.zip');
-    });
   });
 })();
